@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Seller extends User {
     private Set<User> follower;
-    private Map<Integer, Post> posts;
+    private Map<Long, Post> posts;
 
     private Seller(Long id, String username) {
         super(id, username);
@@ -17,13 +17,13 @@ public class Seller extends User {
         this.posts = new HashMap<>();
     }
 
-    private Seller(Long id, String username, Set<Seller> following, Set<User> follower, Map<Integer, Post> posts) {
+    private Seller(Long id, String username, Set<Seller> following, Set<User> follower, Map<Long, Post> posts) {
         super(id, username, following);
         this.follower = follower;
         this.posts = posts;
     }
 
-    public static Seller build(User user, Set<User> follower,Map<Integer, Post> posts) {
+    public static Seller build(User user, Set<User> follower,Map<Long, Post> posts) {
         ArgumentValidator.validateRequired(posts, "Posts is required");
         ArgumentValidator.validateRequired(follower, "Follower is required");
         return new Seller(user.getId(), user.getUsername(), user.getFollowing(), follower, posts);
@@ -33,7 +33,7 @@ public class Seller extends User {
         return follower;
     }
 
-    public Map<Integer, Post> getPosts() {
+    public Map<Long, Post> getPosts() {
         return posts;
     }
 
@@ -41,7 +41,7 @@ public class Seller extends User {
         this.follower = follower;
     }
 
-    public void setPosts(Map<Integer, Post> posts) {
+    public void setPosts(Map<Long, Post> posts) {
         this.posts = posts;
     }
 }
