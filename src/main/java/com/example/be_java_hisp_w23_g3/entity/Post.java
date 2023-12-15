@@ -1,5 +1,7 @@
 package com.example.be_java_hisp_w23_g3.entity;
 
+import com.example.be_java_hisp_w23_g3.util.ArgumentValidator;
+
 import java.time.LocalDate;
 
 public class Post {
@@ -10,13 +12,23 @@ public class Post {
     private int category;
     private Double price;
 
-    public Post(Long id, Seller seller, Product product, LocalDate date, int category, Double price) {
+    private Post(Long id, Seller seller, Product product, LocalDate date, int category, Double price) {
         this.id = id;
         this.seller = seller;
         this.product = product;
         this.date = date;
         this.category = category;
         this.price = price;
+    }
+
+    public static Post build(Long id, Seller seller, Product product, LocalDate date, int category, Double price) {
+        ArgumentValidator.validateRequired(id, "Id is required");
+        ArgumentValidator.validateRequired(seller, "Seller is required");
+        ArgumentValidator.validateRequired(product, "Product is required");
+        ArgumentValidator.validateRequired(date, "Date is required");
+        ArgumentValidator.validateRequired(category, "Category is required");
+        ArgumentValidator.validateRequired(price, "Price is required");
+        return new Post(id, seller, product, date, category, price);
     }
 
     public Long getId() {
