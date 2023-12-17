@@ -12,4 +12,9 @@ public class ExceptionController {
     public ResponseEntity<?> validationException(ValidationException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<?> notFoundException(ValidationException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 }
