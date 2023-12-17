@@ -2,6 +2,8 @@ package com.example.be_java_hisp_w23_g3.repository.user;
 
 import com.example.be_java_hisp_w23_g3.entity.User;
 import jakarta.annotation.PostConstruct;
+import com.example.be_java_hisp_w23_g3.entity.Seller;
+import com.example.be_java_hisp_w23_g3.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -26,4 +28,9 @@ public class UserRepositoryImpl implements UserRepository {
                 User.build(6L, "user6")
         ));
     }
+
+    public User findUserByID(Long userID){
+        return users.stream().filter(user -> user.getId().equals(userID)).findFirst().orElse(null);
+    }
+
 }
