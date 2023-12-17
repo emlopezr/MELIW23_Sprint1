@@ -26,4 +26,8 @@ public class UserRepositoryImpl implements UserRepository {
                 User.build(6L, "user6")
         ));
     }
+
+    public User findUserByID(Long userID){
+        return users.stream().filter(user -> user.getId().equals(userID)).findFirst().orElse(null);
+    }
 }

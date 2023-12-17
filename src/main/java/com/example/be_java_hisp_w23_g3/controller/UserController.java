@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-   
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -27,9 +27,14 @@ public class UserController {
     public ResponseEntity<FollowersListDTO> getFollowersList(@PathVariable("userId") Long userId) {
         return new ResponseEntity<>(userService.getFollowersList(userId), HttpStatus.OK);
     }
-      
+
     @GetMapping("/{userId}/followers/count")
     public ResponseEntity<?> getFollowersCount(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getFollowersCount(userId));
+    }
+
+    @GetMapping("/users/{userID}/followed/list")
+    public ResponseEntity<?> getFollowedSellerList(@PathVariable Long userID){
+        return new ResponseEntity<>(userService.getFollowedSellersList(userID), HttpStatus.OK);
     }
 }
