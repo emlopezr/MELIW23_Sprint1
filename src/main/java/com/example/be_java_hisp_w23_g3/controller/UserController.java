@@ -1,9 +1,7 @@
 package com.example.be_java_hisp_w23_g3.controller;
 
 import com.example.be_java_hisp_w23_g3.service.user.UserService;
-
 import com.example.be_java_hisp_w23_g3.dto.response.FollowersListDTO;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
