@@ -1,5 +1,7 @@
 package com.example.be_java_hisp_w23_g3.repository.user;
 
+import com.example.be_java_hisp_w23_g3.entity.User;
+import jakarta.annotation.PostConstruct;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
 import com.example.be_java_hisp_w23_g3.entity.User;
 import org.springframework.stereotype.Repository;
@@ -8,30 +10,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class UserRepositoryImpl implements UserRepository{
+public class UserRepositoryImpl implements UserRepository {
+    private final List<User> users;
 
-    private List<User> listOfUsers = new ArrayList<>();
-    @Override
-    public String followSeller(Long userId, Long userIdToFollow) {
-        Seller sellerToFollow = isSeller(userIdToFollow);
-        User user = findUserById(userId);
-        sellerToFollow.getFollower().add(user);
-        user.getFollowing().add(sellerToFollow);
-        return "Siguiendo a un nuevo vendedor !";
+    public UserRepositoryImpl() {
+        this.users = new ArrayList<>();
+    }
+
+    @PostConstruct
+    private void load() {
+        users.addAll(List.of(
+                User.build(1L, "user1"),
+                User.build(2L, "user2"),
+                User.build(3L, "user3"),
+                User.build(4L, "user4"),
+                User.build(5L, "user5"),
+                User.build(6L, "user6")
+        ));
     }
 
     public User findUserById(Long userId){
-        return listOfUsers.stream()
+        return users.stream()
                 .filter(user -> user.getId().equals(userId))
                 .findFirst()
                 .orElse(null);
     }
 
-    public Seller isSeller(Long userId){
-       Seller seller = (Seller) listOfUsers.stream()
-               .filter(user -> user.getId().equals(userId))
-               .filter(Seller.class :: isInstance)
-               .findFirst().orElse(null);
-       return seller;
-    }
 }

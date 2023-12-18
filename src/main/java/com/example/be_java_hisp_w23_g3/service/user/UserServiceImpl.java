@@ -1,13 +1,22 @@
 package com.example.be_java_hisp_w23_g3.service.user;
 
+import com.example.be_java_hisp_w23_g3.dto.response.FollowSellerDTO;
+import com.example.be_java_hisp_w23_g3.dto.response.FollowersCountDTO;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
-import com.example.be_java_hisp_w23_g3.entity.User;
-import com.example.be_java_hisp_w23_g3.exception.UserNotFoundException;
+import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
 import com.example.be_java_hisp_w23_g3.repository.seller.SellerRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.example.be_java_hisp_w23_g3.util.DTOMapper;
+import com.example.be_java_hisp_w23_g3.dto.response.FollowersListDTO;
+import com.example.be_java_hisp_w23_g3.dto.response.UserDTO;
+import com.example.be_java_hisp_w23_g3.entity.User;
+import com.example.be_java_hisp_w23_g3.util.UserMapper;
 
+import org.springframework.stereotype.Service;
+
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,18 +29,37 @@ public class UserServiceImpl implements UserService {
         this.sellerRepository = sellerRepository;
     }
 
-    public String followSeller(Long userId, Long userIdToFollow) {
+    @Override
+    public FollowersCountDTO getFollowersCount(Long userId) {
+        Seller seller = sellerRepository.findSellerById(userId);
+        if (seller == null)
+            throw new NotFoundException("Seller with id " + userId + " not found");
+        return DTOMapper.mapToFollowersCountDTO(seller);
+    }
+
+    @Override
+    public FollowersListDTO getFollowersList(Long userId) {
+        Seller seller = sellerRepository.findSellerById(userId);
+        if (seller == null) {
+            throw new NotFoundException("Seller with id " + userId + " not found");
+        }
+        return new FollowersListDTO(userId, seller.getUsername(), mapFollowersToDTO(seller.getFollower()));
+    }
+
+    private Set<UserDTO> mapFollowersToDTO(Set<User> followers) {
+        return followers.stream().map(UserMapper::mapToDTO).collect(Collectors.toSet());
+    }
+
+    public FollowSellerDTO followSeller(Long userId, Long userIdToFollow) {
         Seller sellerToFollow = sellerRepository.findSellerById(userIdToFollow);
         User user = userRepository.findUserById(userId);
         if(sellerToFollow == null){
-            throw new UserNotFoundException("El vendedor elegido no existe");
+            throw new NotFoundException("Seller with id " + userIdToFollow + " not found");
         }else if(user == null){
-            throw new UserNotFoundException("El usuario no existe");
+            throw new NotFoundException("User with id " + userId + " not found");
         }
         sellerToFollow.getFollower().add(user);
         user.getFollowing().add(sellerToFollow);
-        return userRepository.followSeller(userId, userIdToFollow);
+        return new FollowSellerDTO("Following a new Seller!");
     }
 }
-
-
