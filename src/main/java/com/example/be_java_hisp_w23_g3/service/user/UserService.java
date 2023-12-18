@@ -1,10 +1,6 @@
 package com.example.be_java_hisp_w23_g3.service.user;
 
-import com.example.be_java_hisp_w23_g3.dto.response.FollowSellerDTO;
-import com.example.be_java_hisp_w23_g3.dto.response.FollowersCountDTO;
-import com.example.be_java_hisp_w23_g3.dto.response.FollowersListDTO;
-
-import com.example.be_java_hisp_w23_g3.dto.response.FollowedListDTO;
+import com.example.be_java_hisp_w23_g3.dto.response.*;
 
 public interface UserService {
 
@@ -15,4 +11,6 @@ public interface UserService {
     FollowedListDTO getFollowedSellersList(Long userID);
 
     FollowSellerDTO followSeller(Long userId, Long userIdToFollow);
+
+    MessageResponseDTO unFollowSeller(Long userId, Long userIdToUnfollow);
 }

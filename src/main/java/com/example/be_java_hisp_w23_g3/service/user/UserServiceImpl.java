@@ -1,19 +1,15 @@
 package com.example.be_java_hisp_w23_g3.service.user;
 
-import com.example.be_java_hisp_w23_g3.dto.response.FollowSellerDTO;
-import com.example.be_java_hisp_w23_g3.dto.response.FollowersCountDTO;
+import com.example.be_java_hisp_w23_g3.dto.response.*;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
 import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
+import com.example.be_java_hisp_w23_g3.exception.UnFollowingMyselfException;
 import com.example.be_java_hisp_w23_g3.repository.seller.SellerRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
 import com.example.be_java_hisp_w23_g3.util.DTOMapper;
-import com.example.be_java_hisp_w23_g3.dto.response.FollowersListDTO;
-import com.example.be_java_hisp_w23_g3.dto.response.UserDTO;
 import com.example.be_java_hisp_w23_g3.entity.User;
 import com.example.be_java_hisp_w23_g3.util.UserMapper;
 
-import com.example.be_java_hisp_w23_g3.dto.response.FollowedListDTO;
-import com.example.be_java_hisp_w23_g3.dto.response.SellerDTO;
 import com.example.be_java_hisp_w23_g3.util.SellerMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -82,6 +78,27 @@ public class UserServiceImpl implements UserService {
         sellerToFollow.getFollower().add(user);
         user.getFollowing().add(sellerToFollow);
         return new FollowSellerDTO("Following a new Seller!");
+    }
+    public MessageResponseDTO unFollowSeller(Long userId, Long userIdToUnfollow) {
+        if(userId.equals(userIdToUnfollow)){
+            throw new UnFollowingMyselfException("You can't unfollow yourself");
+        }
+
+        User user = userRepository.findUserById(userId);
+
+        if(user == null){
+            throw new NotFoundException("User with id " + userId + " not found");
+        }
+
+        Seller sellerToUnfollow = userRepository.findSellerInFollowings(user,userIdToUnfollow);
+
+        if(sellerToUnfollow == null){
+            throw new NotFoundException("Seller with id " + userIdToUnfollow + " is not part of your followings");
+        }
+
+        sellerToUnfollow.getFollower().remove(user);
+        user.getFollowing().remove(sellerToUnfollow);
+        return new MessageResponseDTO("You have just unfollowed a seller");
     }
 }
 
