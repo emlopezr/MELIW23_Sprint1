@@ -2,7 +2,6 @@ package com.example.be_java_hisp_w23_g3.service.user;
 
 import com.example.be_java_hisp_w23_g3.dto.response.FollowersCountDTO;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
-import com.example.be_java_hisp_w23_g3.entity.User;
 import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
 import com.example.be_java_hisp_w23_g3.repository.seller.SellerRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
@@ -11,6 +10,7 @@ import com.example.be_java_hisp_w23_g3.dto.response.FollowersListDTO;
 import com.example.be_java_hisp_w23_g3.dto.response.UserDTO;
 import com.example.be_java_hisp_w23_g3.entity.User;
 import com.example.be_java_hisp_w23_g3.util.UserMapper;
+
 import com.example.be_java_hisp_w23_g3.dto.response.FollowedListDTO;
 import com.example.be_java_hisp_w23_g3.dto.response.SellerDTO;
 import com.example.be_java_hisp_w23_g3.util.SellerMapper;
@@ -49,19 +49,23 @@ public class UserServiceImpl implements UserService {
 
     private Set<UserDTO> mapFollowersToDTO(Set<User> followers) {
         return followers.stream().map(UserMapper::mapToDTO).collect(Collectors.toSet());
+
     }
 
     @Override
-    public FollowedListDTO getFollowedSellersList(Long userID){
+    public FollowedListDTO getFollowedSellersList(Long userID) {
         User user = userRepository.findUserByID(userID);
-        if(user == null){
-            throw new NotFoundException("User with id " + userID + " not found");
+        Seller seller = sellerRepository.findSellerById(userID);
+        if (user != null) {
+            return new FollowedListDTO(user.getId(), user.getUsername(), mapFollowedToDTO(user.getFollowing()));
         }
-        return new FollowedListDTO(user.getId(), user.getUsername(), mapFollowedToDTO(user.getFollowing()));
+        if (seller != null) {
+            return new FollowedListDTO(seller.getId(), seller.getUsername(), mapFollowedToDTO(seller.getFollowing()));
+        }
+        throw new NotFoundException("User with id " + userID + " not found");
     }
 
-    public Set<SellerDTO> mapFollowedToDTO(Set<Seller> followed){
+    public Set<SellerDTO> mapFollowedToDTO(Set<Seller> followed) {
         return followed.stream().map(SellerMapper::mapToDTO).collect(Collectors.toSet());
     }
-
 }
