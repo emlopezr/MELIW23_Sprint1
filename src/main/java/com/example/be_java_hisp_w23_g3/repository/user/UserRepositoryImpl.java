@@ -1,11 +1,13 @@
 package com.example.be_java_hisp_w23_g3.repository.user;
 
+import com.example.be_java_hisp_w23_g3.entity.Seller;
 import com.example.be_java_hisp_w23_g3.entity.User;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -18,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
     @PostConstruct
     private void load() {
         users.addAll(List.of(
-                User.build(1L, "user1"),
+                User.build(1L, "user1", Set.of(Seller.build(User.build(8L,"seller8")))),
                 User.build(2L, "user2"),
                 User.build(3L, "user3"),
                 User.build(4L, "user4"),
@@ -26,4 +28,10 @@ public class UserRepositoryImpl implements UserRepository {
                 User.build(6L, "user6")
         ));
     }
+
+    @Override
+    public User findUserByID(Long userID){
+        return users.stream().filter(user -> user.getId().equals(userID)).findFirst().orElse(null);
+    }
+
 }
