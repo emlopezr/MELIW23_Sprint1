@@ -8,7 +8,20 @@ import com.example.be_java_hisp_w23_g3.repository.user.SellerRepositoryImpl;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepositoryImpl;
 import com.example.be_java_hisp_w23_g3.util.DTOMapper;
+
+import com.example.be_java_hisp_w23_g3.dto.response.FollowersListDTO;
+import com.example.be_java_hisp_w23_g3.dto.response.UserDTO;
+import com.example.be_java_hisp_w23_g3.entity.Seller;
+import com.example.be_java_hisp_w23_g3.entity.User;
+import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
+import com.example.be_java_hisp_w23_g3.repository.seller.SellerRepository;
+import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
+import com.example.be_java_hisp_w23_g3.util.UserMapper;
+
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
 
-    public UserServiceImpl(UserRepositoryImpl userRepository, SellerRepositoryImpl sellerRepository) {
+    public UserServiceImpl(UserRepository userRepository, SellerRepository sellerRepository) {
         this.userRepository = userRepository;
         this.sellerRepository = sellerRepository;
     }
@@ -27,5 +40,18 @@ public class UserServiceImpl implements UserService {
         if (seller == null)
             throw new NotFoundException("Seller with id " + userId + " not found");
         return DTOMapper.mapToFollowersCountDTO(seller);
+    }
+
+    @Override
+    public FollowersListDTO getFollowersList(Long userId) {
+        Seller seller = sellerRepository.findSellerById(userId);
+        if (seller == null) {
+            throw new NotFoundException("Seller with id " + userId + " not found");
+        }
+        return new FollowersListDTO(userId, seller.getUsername(), mapFollowersToDTO(seller.getFollower()));
+    }
+
+    private Set<UserDTO> mapFollowersToDTO(Set<User> followers) {
+        return followers.stream().map(UserMapper::mapToDTO).collect(Collectors.toSet());
     }
 }
