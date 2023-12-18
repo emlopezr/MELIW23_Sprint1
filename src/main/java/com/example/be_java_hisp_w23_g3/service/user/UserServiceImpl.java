@@ -13,11 +13,6 @@ import com.example.be_java_hisp_w23_g3.util.UserMapper;
 
 import com.example.be_java_hisp_w23_g3.dto.response.FollowedListDTO;
 import com.example.be_java_hisp_w23_g3.dto.response.SellerDTO;
-import com.example.be_java_hisp_w23_g3.entity.Seller;
-import com.example.be_java_hisp_w23_g3.entity.User;
-import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
-import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
-import com.example.be_java_hisp_w23_g3.repository.user.UserRepositoryImpl;
 import com.example.be_java_hisp_w23_g3.util.SellerMapper;
 import org.springframework.stereotype.Service;
 
