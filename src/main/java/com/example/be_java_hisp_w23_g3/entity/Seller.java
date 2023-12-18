@@ -23,6 +23,10 @@ public class Seller extends User {
         this.posts = posts;
     }
 
+    public static Seller build(User user) {
+        return new Seller(user.getId(), user.getUsername());
+    }
+
     public static Seller build(User user, Set<User> follower,Map<Long, Post> posts) {
         ArgumentValidator.validateRequired(posts, "Posts is required");
         ArgumentValidator.validateRequired(follower, "Follower is required");

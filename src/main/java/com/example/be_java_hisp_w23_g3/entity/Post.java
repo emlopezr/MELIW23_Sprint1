@@ -3,6 +3,7 @@ package com.example.be_java_hisp_w23_g3.entity;
 import com.example.be_java_hisp_w23_g3.util.ArgumentValidator;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Post {
     private Long id;
