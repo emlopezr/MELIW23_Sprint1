@@ -2,36 +2,36 @@ package com.example.be_java_hisp_w23_g3.repository.user;
 
 import com.example.be_java_hisp_w23_g3.entity.Seller;
 import com.example.be_java_hisp_w23_g3.entity.User;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Repository
-public class UserRepositoryImpl implements UserRepository{
+public class UserRepositoryImpl implements UserRepository {
+    private final List<User> users;
 
-    private List<User> listOfUsers = new ArrayList<>();
+    public UserRepositoryImpl() {
+        this.users = new ArrayList<>();
+    }
+
+    @PostConstruct
+    private void load() {
+        users.addAll(List.of(
+                User.build(1L, "user1", Set.of(Seller.build(User.build(8L,"seller8")))),
+                User.build(2L, "user2"),
+                User.build(3L, "user3"),
+                User.build(4L, "user4"),
+                User.build(5L, "user5"),
+                User.build(6L, "user6")
+        ));
+    }
+
     @Override
-    public String followSeller(Long userId, Long userIdToFollow) {
-        Seller sellerToFollow = isSeller(userIdToFollow);
-        User user = findUserById(userId);
-        sellerToFollow.getFollower().add(user);
-        user.getFollowing().add(sellerToFollow);
-        return "Siguiendo a un nuevo vendedor !";
+    public User findUserByID(Long userID){
+        return users.stream().filter(user -> user.getId().equals(userID)).findFirst().orElse(null);
     }
 
-    public User findUserById(Long userId){
-        return listOfUsers.stream()
-                .filter(user -> user.getId().equals(userId))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public Seller isSeller(Long userId){
-       Seller seller = (Seller) listOfUsers.stream()
-               .filter(user -> user.getId().equals(userId))
-               .filter(Seller.class :: isInstance)
-               .findFirst().orElse(null);
-       return seller;
-    }
 }
