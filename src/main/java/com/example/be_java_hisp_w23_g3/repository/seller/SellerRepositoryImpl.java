@@ -33,4 +33,10 @@ public class SellerRepositoryImpl implements SellerRepository{
     public Seller findSellerById(Long sellerId) {
         return sellers.stream().filter(seller -> seller.getId().equals(sellerId)).findFirst().orElse(null);
     }
+
+    @Override
+    public Seller save(Seller seller) {
+        sellers.add(seller);
+        return seller;
+    }
 }

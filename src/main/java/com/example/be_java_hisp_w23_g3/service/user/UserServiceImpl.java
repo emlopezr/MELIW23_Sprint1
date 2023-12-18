@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public FollowedListDTO getFollowedSellersList(Long userID) {
-        User user = userRepository.findUserByID(userID);
+        User user = userRepository.findUserById(userID);
         Seller seller = sellerRepository.findSellerById(userID);
         if (user != null) {
             return new FollowedListDTO(user.getId(), user.getUsername(), mapFollowedToDTO(user.getFollowing()));
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     public FollowSellerDTO followSeller(Long userId, Long userIdToFollow) {
         Seller sellerToFollow = sellerRepository.findSellerById(userIdToFollow);
-        User user = userRepository.findUserByID(userId);
+        User user = userRepository.findUserById(userId);
         if(sellerToFollow == null){
             throw new NotFoundException("Seller with id " + userIdToFollow + " not found");
         }else if(user == null){
