@@ -17,6 +17,19 @@ public class UserRepositoryImpl implements UserRepository {
         this.users = new ArrayList<>();
     }
 
+    @Override
+    public User findUserById(Long userId) {
+        return users.stream()
+            .filter(user -> user.getId().equals(userId))
+            .findFirst()
+            .orElse(null);
+    }
+
+    @Override
+    public boolean deleteUserById(Long userId) {
+        return users.removeIf(user -> user.getId().equals(userId));
+    }
+
     @PostConstruct
     private void load() {
         users.addAll(List.of(
@@ -28,10 +41,4 @@ public class UserRepositoryImpl implements UserRepository {
                 User.build(6L, "user6")
         ));
     }
-
-    @Override
-    public User findUserByID(Long userID){
-        return users.stream().filter(user -> user.getId().equals(userID)).findFirst().orElse(null);
-    }
-
 }
