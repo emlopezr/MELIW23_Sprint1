@@ -8,18 +8,11 @@ import com.example.be_java_hisp_w23_g3.repository.seller.SellerRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
 import com.example.be_java_hisp_w23_g3.util.DTOMapper;
 import com.example.be_java_hisp_w23_g3.dto.response.FollowersListDTO;
-import com.example.be_java_hisp_w23_g3.dto.response.UserDTO;
 import com.example.be_java_hisp_w23_g3.entity.User;
 import com.example.be_java_hisp_w23_g3.util.UserMapper;
 
 import com.example.be_java_hisp_w23_g3.dto.response.FollowedListDTO;
-import com.example.be_java_hisp_w23_g3.dto.response.SellerDTO;
-import com.example.be_java_hisp_w23_g3.util.SellerMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,34 +34,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public FollowersListDTO getFollowersList(Long userId) {
-        Seller seller = sellerRepository.findSellerById(userId);
-        if (seller == null) {
-            throw new NotFoundException("Seller with id " + userId + " not found");
-        }
-        return new FollowersListDTO(userId, seller.getUsername(), mapFollowersToDTO(seller.getFollower()));
-    }
+    public FollowersListDTO getFollowersList(Long userId, String order) {
+        Seller seller = sellerRepository.findSellerByIdOptional(userId)
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
 
-    private Set<UserDTO> mapFollowersToDTO(Set<User> followers) {
-        return followers.stream().map(UserMapper::mapToDTO).collect(Collectors.toSet());
-
+        return UserMapper.mapToFollowersListDTO(seller, order);
     }
 
     @Override
-    public FollowedListDTO getFollowedSellersList(Long userID) {
-        User user = userRepository.findUserById(userID);
-        Seller seller = sellerRepository.findSellerById(userID);
-        if (user != null) {
-            return new FollowedListDTO(user.getId(), user.getUsername(), mapFollowedToDTO(user.getFollowing()));
-        }
-        if (seller != null) {
-            return new FollowedListDTO(seller.getId(), seller.getUsername(), mapFollowedToDTO(seller.getFollowing()));
-        }
-        throw new NotFoundException("User with id " + userID + " not found");
-    }
+    public FollowedListDTO getFollowedSellersList(Long userID, String order) {
+        User user = userRepository.findUserByIdOptional(userID)
+                .or(() -> sellerRepository.findSellerByIdOptional(userID))
+                .orElseThrow(() -> new NotFoundException("User with id " + userID + " not found"));
 
-    public Set<SellerDTO> mapFollowedToDTO(Set<Seller> followed) {
-        return followed.stream().map(SellerMapper::mapToDTO).collect(Collectors.toSet());
+        return UserMapper.mapToFollowedListDTO(user, order);
     }
 
     public FollowSellerDTO followSeller(Long userId, Long userIdToFollow) {

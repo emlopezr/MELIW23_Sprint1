@@ -8,11 +8,11 @@ import com.example.be_java_hisp_w23_g3.dto.response.FollowedListDTO;
 
 public interface UserService {
 
-    FollowersListDTO getFollowersList(Long userId);
+    FollowersListDTO getFollowersList(Long userId, String order);
 
     FollowersCountDTO getFollowersCount(Long id);
 
-    FollowedListDTO getFollowedSellersList(Long userID);
+    FollowedListDTO getFollowedSellersList(Long userID, String order);
 
     FollowSellerDTO followSeller(Long userId, Long userIdToFollow);
 }

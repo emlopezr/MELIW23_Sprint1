@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -17,6 +18,6 @@ public class FollowersListDTO {
     @JsonProperty("user_name")
     private String userName;
     @JsonProperty("followers")
-    private Set<UserDTO> followers;
+    private List<UserDTO> followers;
 
 }

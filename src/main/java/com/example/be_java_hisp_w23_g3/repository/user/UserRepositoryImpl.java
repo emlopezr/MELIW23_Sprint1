@@ -24,6 +24,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Optional<User> findUserByIdOptional(Long userId) {
+        return users.stream().filter(user -> user.getId().equals(userId)).findFirst();
+    }
+
+    @Override
     public boolean deleteUserById(Long userId) {
         return users.removeIf(user -> user.getId().equals(userId));
     }
@@ -31,7 +36,11 @@ public class UserRepositoryImpl implements UserRepository {
     @PostConstruct
     private void load() {
         users.addAll(List.of(
-                User.build(1L, "user1", new HashSet<>(Arrays.asList(Seller.build(User.build(8L,"seller8"))))),
+                User.build(1L, "user1", new HashSet<>(Arrays.asList(
+                        Seller.build(User.build(8L,"abcdef")),
+                        Seller.build(User.build(9L,"bcdefg")),
+                        Seller.build(User.build(10L,"cdefgh"))
+                ))),
                 User.build(2L, "user2"),
                 User.build(3L, "user3"),
                 User.build(4L, "user4"),
@@ -39,5 +48,4 @@ public class UserRepositoryImpl implements UserRepository {
                 User.build(6L, "user6")
         ));
     }
-
 }
