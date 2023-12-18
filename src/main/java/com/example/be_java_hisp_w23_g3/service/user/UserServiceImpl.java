@@ -49,19 +49,18 @@ public class UserServiceImpl implements UserService{
 
     private Set<UserDTO> mapFollowersToDTO(Set<User> followers) {
         return followers.stream().map(UserMapper::mapToDTO).collect(Collectors.toSet());
+
     }
 
     @Override
-    public FollowedListDTO getFollowedSellersList(Long userID){
+    public FollowedListDTO getFollowedSellersList (Long userID){
         User user = userRepository.findUserByID(userID);
-        if(user == null){
+        if (user == null) {
             throw new NotFoundException("User with id " + userID + " not found");
         }
         return new FollowedListDTO(user.getId(), user.getUsername(), mapFollowedToDTO(user.getFollowing()));
     }
 
-    public Set<SellerDTO> mapFollowedToDTO(Set<Seller> followed){
+    public Set<SellerDTO> mapFollowedToDTO (Set < Seller > followed) {
         return followed.stream().map(SellerMapper::mapToDTO).collect(Collectors.toSet());
     }
-
-}

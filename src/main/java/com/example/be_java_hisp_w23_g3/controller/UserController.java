@@ -1,10 +1,8 @@
 package com.example.be_java_hisp_w23_g3.controller;
 
 import com.example.be_java_hisp_w23_g3.service.user.UserService;
-import com.example.be_java_hisp_w23_g3.service.user.UserServiceImpl;
 
 import com.example.be_java_hisp_w23_g3.dto.response.FollowersListDTO;
-import com.example.be_java_hisp_w23_g3.service.user.UserService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
