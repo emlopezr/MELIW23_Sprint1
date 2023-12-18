@@ -5,10 +5,7 @@ import com.example.be_java_hisp_w23_g3.entity.User;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public class SellerRepositoryImpl implements SellerRepository{
@@ -34,6 +31,11 @@ public class SellerRepositoryImpl implements SellerRepository{
     @Override
     public Seller findSellerById(Long sellerId) {
         return sellers.stream().filter(seller -> seller.getId().equals(sellerId)).findFirst().orElse(null);
+    }
+
+    @Override
+    public Optional<Seller> findSellerByIdOptional(Long sellerId) {
+        return sellers.stream().filter(seller -> seller.getId().equals(sellerId)).findFirst();
     }
 
     @Override

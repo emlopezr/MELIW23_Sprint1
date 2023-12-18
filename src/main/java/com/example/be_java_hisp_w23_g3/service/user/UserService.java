@@ -11,6 +11,6 @@ public interface UserService {
 
     FollowersCountDTO getFollowersCount(Long id);
 
-    FollowedListDTO getFollowedSellersList(Long userID);
+    FollowedListDTO getFollowedSellersList(Long userID, String order);
 
 }
