@@ -33,10 +33,6 @@ public class Seller extends User {
         return new Seller(user.getId(), user.getUsername(), user.getFollowing(), follower, posts);
     }
 
-    public static Seller build(User user) {
-        return new Seller(user.getId(), user.getUsername());
-    }
-
     public Set<User> getFollower() {
         return follower;
     }
