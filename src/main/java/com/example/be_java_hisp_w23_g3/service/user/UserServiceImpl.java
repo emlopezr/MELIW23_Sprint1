@@ -7,6 +7,7 @@ import com.example.be_java_hisp_w23_g3.repository.user.SellerRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.SellerRepositoryImpl;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepositoryImpl;
+import com.example.be_java_hisp_w23_g3.util.DTOMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +26,6 @@ public class UserServiceImpl implements UserService {
         Seller seller = sellerRepository.findSellerById(userId);
         if (seller == null)
             throw new NotFoundException("Seller with id " + userId + " not found");
-        return new FollowersCountDTO(seller.getId(), seller.getUsername(), seller.getFollower().size());
+        return DTOMapper.mapToFollowersCountDTO(seller);
     }
 }
