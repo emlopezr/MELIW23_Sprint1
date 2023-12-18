@@ -34,4 +34,9 @@ public class UserController {
                                                    @RequestParam(required = false) String order) {
         return new ResponseEntity<>(userService.getFollowedSellersList(userID, order), HttpStatus.OK);
     }
+
+    @PostMapping("/{userId}/follow/{userIdToFollow}")
+    public ResponseEntity<?> followSeller(@PathVariable Long userId, @PathVariable Long userIdToFollow){
+        return ResponseEntity.ok().body(userService.followSeller(userId, userIdToFollow));
+    }
 }
