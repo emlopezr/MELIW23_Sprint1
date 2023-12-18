@@ -12,11 +12,8 @@ import com.example.be_java_hisp_w23_g3.entity.User;
 import com.example.be_java_hisp_w23_g3.util.UserMapper;
 
 import com.example.be_java_hisp_w23_g3.dto.response.FollowedListDTO;
-import com.example.be_java_hisp_w23_g3.dto.response.SellerDTO;
-import com.example.be_java_hisp_w23_g3.util.SellerMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,12 +37,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public FollowersListDTO getFollowersList(Long userId) {
-        Seller seller = sellerRepository.findSellerById(userId);
-        if (seller == null) {
-            throw new NotFoundException("Seller with id " + userId + " not found");
-        }
-        return new FollowersListDTO(userId, seller.getUsername(), mapFollowersToDTO(seller.getFollower()));
+    public FollowersListDTO getFollowersList(Long userId, String order) {
+        Seller seller = sellerRepository.findSellerByIdOptional(userId)
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
+
+        return UserMapper.mapToFollowersListDTO(seller, order);
     }
 
     private Set<UserDTO> mapFollowersToDTO(Set<User> followers) {

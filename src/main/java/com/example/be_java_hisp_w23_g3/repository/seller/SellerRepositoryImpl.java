@@ -19,7 +19,11 @@ public class SellerRepositoryImpl implements SellerRepository{
     @PostConstruct
     private void load() {
         sellers.addAll(List.of(
-                Seller.build(User.build(7L, "seller1"), Set.of(User.build(13L, "follower1"), User.build(13L, "follower1")), new HashMap<>()),
+                Seller.build(User.build(7L, "seller1"), Set.of(
+                        User.build(13L, "abcdef"),
+                        User.build(14L, "bcdefg"),
+                        User.build(15L, "cdefgh")
+                ), new HashMap<>()),
                 Seller.build(User.build(8L, "seller2")),
                 Seller.build(User.build(9L, "seller3")),
                 Seller.build(User.build(10L, "seller4")),

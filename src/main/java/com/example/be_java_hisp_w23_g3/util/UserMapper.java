@@ -1,8 +1,6 @@
 package com.example.be_java_hisp_w23_g3.util;
 
-import com.example.be_java_hisp_w23_g3.dto.response.FollowedListDTO;
-import com.example.be_java_hisp_w23_g3.dto.response.SellerDTO;
-import com.example.be_java_hisp_w23_g3.dto.response.UserDTO;
+import com.example.be_java_hisp_w23_g3.dto.response.*;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
 import com.example.be_java_hisp_w23_g3.entity.User;
 
@@ -32,5 +30,20 @@ public class UserMapper {
 
         return new FollowedListDTO(user.getId(), user.getUsername(), user.getFollowing().stream()
                 .map(SellerMapper::mapToDTO).toList());
+    }
+
+    public static FollowersListDTO mapToFollowersListDTO(Seller seller, String order) {
+        if (ORDER_NAME_ASC.equalsIgnoreCase(order))
+            return new FollowersListDTO(seller.getId(), seller.getUsername(), seller.getFollower().stream()
+                    .sorted(Comparator.comparing(User::getUsername))
+                    .map(UserMapper::mapToDTO).toList());
+
+        if (ORDER_NAME_DESC.equalsIgnoreCase(order))
+            return new FollowersListDTO(seller.getId(), seller.getUsername(), seller.getFollower().stream()
+                    .sorted(Comparator.comparing(User::getUsername).reversed())
+                    .map(UserMapper::mapToDTO).toList());
+
+        return new FollowersListDTO(seller.getId(), seller.getUsername(), seller.getFollower().stream()
+                .map(UserMapper::mapToDTO).toList());
     }
 }
