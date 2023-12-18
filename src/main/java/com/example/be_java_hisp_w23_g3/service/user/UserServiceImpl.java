@@ -2,6 +2,7 @@ package com.example.be_java_hisp_w23_g3.service.user;
 
 import com.example.be_java_hisp_w23_g3.dto.response.FollowersCountDTO;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
+import com.example.be_java_hisp_w23_g3.entity.User;
 import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
 import com.example.be_java_hisp_w23_g3.repository.seller.SellerRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService {
     private Set<UserDTO> mapFollowersToDTO(Set<User> followers) {
         return followers.stream().map(UserMapper::mapToDTO).collect(Collectors.toSet());
     }
-    
+
     @Override
     public FollowedListDTO getFollowedSellersList(Long userID){
         User user = userRepository.findUserByID(userID);
@@ -62,4 +63,5 @@ public class UserServiceImpl implements UserService {
     public Set<SellerDTO> mapFollowedToDTO(Set<Seller> followed){
         return followed.stream().map(SellerMapper::mapToDTO).collect(Collectors.toSet());
     }
+
 }
