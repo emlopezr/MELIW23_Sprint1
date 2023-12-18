@@ -5,6 +5,7 @@ import com.example.be_java_hisp_w23_g3.dto.response.SellerDTO;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
 import com.example.be_java_hisp_w23_g3.entity.User;
 import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
+import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepositoryImpl;
 import com.example.be_java_hisp_w23_g3.util.SellerMapper;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService{
 
-    private final UserRepositoryImpl userRepository;
+    private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepositoryImpl userRepository){
+    public UserServiceImpl(UserRepository userRepository){
         this.userRepository = userRepository;
     }
 
+    @Override
     public FollowedListDTO getFollowedSellersList(Long userID){
         User user = userRepository.findUserByID(userID);
         if(user == null){
