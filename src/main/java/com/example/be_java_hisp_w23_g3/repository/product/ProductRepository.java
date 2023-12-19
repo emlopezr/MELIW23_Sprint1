@@ -8,4 +8,5 @@ public interface ProductRepository {
     Long getNextId();
     List<Post> readBatchBySellerIds(List<Long> sellerIds);
     Post save(Post post);
+    List<Post> findAll();
 }

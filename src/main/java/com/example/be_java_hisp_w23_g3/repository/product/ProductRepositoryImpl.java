@@ -31,4 +31,9 @@ public class ProductRepositoryImpl implements ProductRepository{
         return post;
     }
 
+    @Override
+    public List<Post> findAll() {
+        return posts;
+    }
+
 }

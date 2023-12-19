@@ -6,12 +6,12 @@ import com.example.be_java_hisp_w23_g3.dto.response.PostResponseDTO;
 import com.example.be_java_hisp_w23_g3.entity.Post;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
 import com.example.be_java_hisp_w23_g3.entity.User;
-import com.example.be_java_hisp_w23_g3.exception.AlreadyExistsProductException;
+import com.example.be_java_hisp_w23_g3.exception.AlreadyExistsException;
 import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
 import com.example.be_java_hisp_w23_g3.repository.product.ProductRepository;
 import com.example.be_java_hisp_w23_g3.repository.seller.SellerRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
-import com.example.be_java_hisp_w23_g3.util.DTOMapper;
+import com.example.be_java_hisp_w23_g3.util.ArgumentValidator;
 import com.example.be_java_hisp_w23_g3.util.PostMapper;
 import org.springframework.stereotype.Service;
 
@@ -40,23 +40,22 @@ public class ProductServiceImpl implements ProductService{
         if (seller == null) {
             User user = userRepository.findUserById(postRequestDTO.getUserId());
 
-            if (user == null) {
-                throw new NotFoundException("User with id " + postRequestDTO.getUserId() + " not found");
-            }
+            // Check if user exists
+            ArgumentValidator.validateRequired(user, "User not found");
 
             // Turn user into seller
             seller = Seller.build(user);
-
-            // Save seller to repository and delete user from repository
             sellerRepository.save(seller);
             userRepository.deleteUserById(user.getId());
         }
 
         // Check if product is already posted (id is unique)
         Long productId = postRequestDTO.getProduct().getProductId();
+        boolean isProductAlreadyPosted = productRepository.findAll().stream()
+            .anyMatch(post -> post.getProduct().getId().equals(productId));
 
-        if (seller.getPosts().containsKey(productId)) {
-            throw new AlreadyExistsProductException(
+        if (isProductAlreadyPosted) {
+            throw new AlreadyExistsException(
                 "Product with id " + productId + " already posted"
             );
         }
@@ -76,7 +75,6 @@ public class ProductServiceImpl implements ProductService{
         User user = userRepository.findUserByIdOptional(userId)
                 .or(() -> sellerRepository.findSellerByIdOptional(userId))
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
-
 
         List<Long> followedSellersIds = user.getFollowing().stream().map(Seller::getId).toList();
 
