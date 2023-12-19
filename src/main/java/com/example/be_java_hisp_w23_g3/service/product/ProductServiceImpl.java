@@ -1,6 +1,7 @@
 package com.example.be_java_hisp_w23_g3.service.product;
 
 import com.example.be_java_hisp_w23_g3.dto.request.PostRequestDTO;
+import com.example.be_java_hisp_w23_g3.dto.response.FollowedPostsListDTO;
 import com.example.be_java_hisp_w23_g3.dto.response.PostResponseDTO;
 import com.example.be_java_hisp_w23_g3.entity.Post;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
@@ -10,8 +11,12 @@ import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
 import com.example.be_java_hisp_w23_g3.repository.product.ProductRepository;
 import com.example.be_java_hisp_w23_g3.repository.seller.SellerRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
+import com.example.be_java_hisp_w23_g3.util.DTOMapper;
 import com.example.be_java_hisp_w23_g3.util.PostMapper;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -64,5 +69,20 @@ public class ProductServiceImpl implements ProductService{
         seller.getPosts().put(id, post);
 
         return PostMapper.toPostResponseDTO(post);
+    }
+
+    @Override
+    public FollowedPostsListDTO followedPostsList(Long userId) {
+        User user = userRepository.findUserByIdOptional(userId)
+                .or(() -> sellerRepository.findSellerByIdOptional(userId))
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
+
+
+        List<Long> followedSellersIds = user.getFollowing().stream().map(Seller::getId).toList();
+
+        List<Post> allFollowedByUser = productRepository.readBatchBySellerIds(followedSellersIds).stream()
+                .filter(post -> !post.getDate().isBefore(LocalDate.now().minusWeeks(2))).toList();
+
+        return PostMapper.mapToFollowedPostsListDTO(allFollowedByUser, userId);
     }
 }

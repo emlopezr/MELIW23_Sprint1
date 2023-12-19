@@ -21,6 +21,11 @@ public class ProductRepositoryImpl implements ProductRepository{
     }
 
     @Override
+    public List<Post> readBatchBySellerIds(List<Long> sellerIds) {
+        return posts.stream().filter(post -> sellerIds.contains(post.getSeller().getId())).toList();
+    }
+
+    @Override
     public Post save(Post post) {
         posts.add(post);
         return post;
