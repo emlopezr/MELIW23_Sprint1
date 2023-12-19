@@ -15,6 +15,9 @@ import java.util.List;
 
 public class PostMapper {
 
+    private static final String ORDER_DATE_ASC = "DATE_ASC";
+    private static final String ORDER_DATE_DESC = "DATE_DESC";
+
     public static PostResponseDTO toPostResponseDTO(Post post){
         ProductDTO productDTO = ProductMapper.toProductDTO(post.getProduct());
 
@@ -45,8 +48,19 @@ public class PostMapper {
         );
     }
 
-    public static FollowedPostsListDTO mapToFollowedPostsListDTO(List<Post> posts, Long userId) {
-        return new FollowedPostsListDTO(userId, posts.stream().map(PostMapper::toPostResponseDTO).toList());
+    public static FollowedPostsListDTO mapToFollowedPostsListDTO(List<Post> posts, Long userId, String order) {
+        if(ORDER_DATE_ASC.equalsIgnoreCase(order))
+            return new FollowedPostsListDTO(userId, posts.stream()
+                    .sorted((p1, p2) -> p1.getDate().compareTo(p2.getDate()))
+                    .map(PostMapper::toPostResponseDTO).toList());
+
+        if(ORDER_DATE_DESC.equalsIgnoreCase(order))
+            return new FollowedPostsListDTO(userId, posts.stream()
+                    .sorted((p1, p2) -> p2.getDate().compareTo(p1.getDate()))
+                    .map(PostMapper::toPostResponseDTO).toList());
+
+        return new FollowedPostsListDTO(userId, posts.stream()
+                .map(PostMapper::toPostResponseDTO).toList());
     }
 
 }
