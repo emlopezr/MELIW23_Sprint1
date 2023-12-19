@@ -16,6 +16,27 @@ public class SellerRepositoryImpl implements SellerRepository{
         this.sellers = new ArrayList<>();
     }
 
+    @Override
+    public Optional<Seller> read(Long sellerId) {
+        return sellers.stream().filter(seller -> seller.getId().equals(sellerId)).findFirst();
+    }
+
+    @Override
+    public Seller create(Seller entity) {
+        sellers.add(entity);
+        return entity;
+    }
+
+    @Override
+    public void update(Seller entity) {
+
+    }
+
+    @Override
+    public void delete(Long aLong) {
+
+    }
+
     @PostConstruct
     private void load() {
         sellers.addAll(List.of(
@@ -33,21 +54,5 @@ public class SellerRepositoryImpl implements SellerRepository{
                 Seller.build(User.build(11L, "seller5")),
                 Seller.build(User.build(12L, "seller6"))
         ));
-    }
-
-    @Override
-    public Seller findSellerById(Long sellerId) {
-        return sellers.stream().filter(seller -> seller.getId().equals(sellerId)).findFirst().orElse(null);
-    }
-
-    @Override
-    public Optional<Seller> findSellerByIdOptional(Long sellerId) {
-        return sellers.stream().filter(seller -> seller.getId().equals(sellerId)).findFirst();
-    }
-
-    @Override
-    public Seller save(Seller seller) {
-        sellers.add(seller);
-        return seller;
     }
 }
