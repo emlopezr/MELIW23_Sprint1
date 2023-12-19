@@ -12,4 +12,6 @@ public interface UserRepository {
 
     boolean deleteUserById(Long userId);
 
+    Seller findSellerInFollowings(User user, Long sellerId);
+
 }

@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class FollowSellerDTO {
+public class MessageResponseDTO {
     private String message;
 }

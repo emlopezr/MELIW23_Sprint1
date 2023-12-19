@@ -45,5 +45,25 @@ public class ExceptionController {
         ExceptionDto exceptionDto = new ExceptionDto(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionDto);
     }
+    @ExceptionHandler(NotAFollowerException.class)
+    public ResponseEntity<?> notAFollowerException(NotAFollowerException e){
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionDto);
+    }
+    @ExceptionHandler(UnFollowingMyselfException.class)
+    public ResponseEntity<?> unFollowingMyselfException(UnFollowingMyselfException e){
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionDto);
+    }
+    @ExceptionHandler(FollowingMyselfException.class)
+    public ResponseEntity<?> followingMyselfException(FollowingMyselfException e){
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionDto);
+    }
+    @ExceptionHandler(AlreadyAFollowerException.class)
+    public ResponseEntity<?> alreadyAFollowerException(AlreadyAFollowerException e){
+        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionDto);
+    }
 
 }

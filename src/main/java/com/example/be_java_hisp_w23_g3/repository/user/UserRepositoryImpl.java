@@ -33,6 +33,14 @@ public class UserRepositoryImpl implements UserRepository {
         return users.removeIf(user -> user.getId().equals(userId));
     }
 
+    @Override
+    public Seller findSellerInFollowings(User user, Long sellerId) {
+        return user.getFollowing().stream()
+                .filter(u -> u.getId().equals(sellerId))
+                .findFirst()
+                .orElse(null);
+    }
+
     @PostConstruct
     private void load() {
         users.addAll(List.of(
