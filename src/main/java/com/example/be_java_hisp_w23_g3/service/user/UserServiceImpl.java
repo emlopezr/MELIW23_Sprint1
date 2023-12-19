@@ -2,6 +2,8 @@ package com.example.be_java_hisp_w23_g3.service.user;
 
 import com.example.be_java_hisp_w23_g3.dto.response.*;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
+import com.example.be_java_hisp_w23_g3.exception.AlreadyAFollowerException;
+import com.example.be_java_hisp_w23_g3.exception.FollowingMyselfException;
 import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
 import com.example.be_java_hisp_w23_g3.exception.UnFollowingMyselfException;
 import com.example.be_java_hisp_w23_g3.repository.seller.SellerRepository;
@@ -12,7 +14,6 @@ import com.example.be_java_hisp_w23_g3.entity.User;
 import com.example.be_java_hisp_w23_g3.util.UserMapper;
 
 import com.example.be_java_hisp_w23_g3.dto.response.FollowedListDTO;
-import com.example.be_java_hisp_w23_g3.util.SellerMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -51,17 +52,23 @@ public class UserServiceImpl implements UserService {
         return UserMapper.mapToFollowedListDTO(user, order);
     }
 
-    public FollowSellerDTO followSeller(Long userId, Long userIdToFollow) {
-        Seller sellerToFollow = sellerRepository.findSellerById(userIdToFollow);
-        User user = userRepository.findUserById(userId);
-        if(sellerToFollow == null){
-            throw new NotFoundException("Seller with id " + userIdToFollow + " not found");
-        }else if(user == null){
-            throw new NotFoundException("User with id " + userId + " not found");
+    public MessageResponseDTO followSeller(Long userId, Long userIdToFollow) {
+        if(userId.equals(userIdToFollow)){
+            throw new FollowingMyselfException("You can't follow yourself");
+        }
+
+        Seller sellerToFollow = sellerRepository.findSellerByIdOptional(userIdToFollow)
+                .orElseThrow(() -> new NotFoundException("Seller with id " + userIdToFollow + " not found"));
+        User user = userRepository.findUserByIdOptional(userId)
+                .or(() -> sellerRepository.findSellerByIdOptional(userId))
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
+
+        if(user.getFollowing().contains(sellerToFollow)){
+            throw new AlreadyAFollowerException("This seller is already part of your followings");
         }
         sellerToFollow.getFollower().add(user);
         user.getFollowing().add(sellerToFollow);
-        return new FollowSellerDTO("Following a new Seller!");
+        return new MessageResponseDTO("Following a new Seller!");
     }
     public MessageResponseDTO unFollowSeller(Long userId, Long userIdToUnfollow) {
         if(userId.equals(userIdToUnfollow)){

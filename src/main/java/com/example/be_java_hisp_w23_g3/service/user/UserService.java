@@ -10,7 +10,7 @@ public interface UserService {
 
     FollowedListDTO getFollowedSellersList(Long userID, String order);
 
-    FollowSellerDTO followSeller(Long userId, Long userIdToFollow);
+    MessageResponseDTO followSeller(Long userId, Long userIdToFollow);
 
     MessageResponseDTO unFollowSeller(Long userId, Long userIdToUnfollow);
 }
