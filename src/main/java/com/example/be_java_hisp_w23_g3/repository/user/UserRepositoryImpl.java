@@ -34,11 +34,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Seller findSellerInFollowings(User user, Long sellerId) {
+    public Optional<Seller> findSellerInFollowings(User user, Long sellerId) {
         return user.getFollowing().stream()
                 .filter(u -> u.getId().equals(sellerId))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     @PostConstruct

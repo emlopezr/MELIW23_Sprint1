@@ -2,10 +2,7 @@ package com.example.be_java_hisp_w23_g3.service.user;
 
 import com.example.be_java_hisp_w23_g3.dto.response.*;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
-import com.example.be_java_hisp_w23_g3.exception.AlreadyAFollowerException;
-import com.example.be_java_hisp_w23_g3.exception.FollowingMyselfException;
-import com.example.be_java_hisp_w23_g3.exception.NotFoundException;
-import com.example.be_java_hisp_w23_g3.exception.UnFollowingMyselfException;
+import com.example.be_java_hisp_w23_g3.exception.*;
 import com.example.be_java_hisp_w23_g3.repository.seller.SellerRepository;
 import com.example.be_java_hisp_w23_g3.repository.user.UserRepository;
 import com.example.be_java_hisp_w23_g3.util.DTOMapper;
@@ -74,17 +71,12 @@ public class UserServiceImpl implements UserService {
             throw new UnFollowingMyselfException("You can't unfollow yourself");
         }
 
-        User user = userRepository.findUserById(userId);
+        User user = userRepository.findUserByIdOptional(userId)
+                .or(() -> sellerRepository.findSellerByIdOptional(userId))
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
 
-        if(user == null){
-            throw new NotFoundException("User with id " + userId + " not found");
-        }
-
-        Seller sellerToUnfollow = userRepository.findSellerInFollowings(user,userIdToUnfollow);
-
-        if(sellerToUnfollow == null){
-            throw new NotFoundException("Seller with id " + userIdToUnfollow + " is not part of your followings");
-        }
+        Seller sellerToUnfollow = userRepository.findSellerInFollowings(user,userIdToUnfollow)
+                .orElseThrow(() -> new NotAFollowerException("Seller with id " + userIdToUnfollow + " is not part of your followings"));
 
         sellerToUnfollow.getFollower().remove(user);
         user.getFollowing().remove(sellerToUnfollow);
