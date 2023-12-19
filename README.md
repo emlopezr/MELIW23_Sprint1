@@ -13,17 +13,17 @@ Para hacer pruebas se recomienda usar Postman. Todos los endpoints y casos de pr
 
 ## Endpoints y responsables
 
-| Requerimiento | Descripción                                                                                                           | Responsable                   |
-|---------------|-----------------------------------------------------------------------------------------------------------------------|-------------------------------|
-| US0001        | Poder realizar la acción de “Follow” (seguir) a un determinado vendedor                                               |  Diana Isabel Ramírez García  |
-| US0002        | Obtener el resultado de la cantidad de usuarios que siguen a un determinado vendedor                                  | Miguel Ochoa Mejía            |
-| US0003        | Obtener un listado de todos los usuarios que siguen a un determinado vendedor (¿Quién me sigue?)                      | Sebastian Ospina García       |
-| US0004        | Obtener  un listado de todos los vendedores a los cuales sigue un determinado usuario (¿A quién sigo?)                | Jhon Edison García García     |
-| US0005        | Dar de alta una nueva publicación                                                                                     | Emmanuel López Rodríguez      |
-| US0006        | Obtener un listado de las publicaciones realizadas por los vendedores que un usuario sigue en las últimas dos semanas | Jorge Rodrigo Marcos Martínez |
-| US0007        | Poder realizar la acción de “Unfollow” (dejar de seguir) a un determinado vendedor.                                   | Diana Isabel Ramírez García   |
-| US0008        | Ordenamiento alfabético ascendente y descendente                                                                      | Miguel Ochoa Mejía            |
-| US0009        | Ordenamiento por fecha ascendente y descendente                                                                       | Sebastian Ospina García       |
+| Requerimiento | Descripción                                                                                                           | Responsable                                        |
+|---------------|-----------------------------------------------------------------------------------------------------------------------|----------------------------------------------------|
+| US0001        | Poder realizar la acción de “Follow” (seguir) a un determinado vendedor                                               | Diana Isabel Ramírez García                        |
+| US0002        | Obtener el resultado de la cantidad de usuarios que siguen a un determinado vendedor                                  | Miguel Ochoa Mejía                                 |
+| US0003        | Obtener un listado de todos los usuarios que siguen a un determinado vendedor (¿Quién me sigue?)                      | Sebastian Ospina García                            |
+| US0004        | Obtener  un listado de todos los vendedores a los cuales sigue un determinado usuario (¿A quién sigo?)                | Jhon Edison García García                          |
+| US0005        | Dar de alta una nueva publicación                                                                                     | Emmanuel López Rodríguez                           |
+| US0006        | Obtener un listado de las publicaciones realizadas por los vendedores que un usuario sigue en las últimas dos semanas | Jorge Rodrigo Marcos Martínez y Miguel Ochoa Mejía |
+| US0007        | Poder realizar la acción de “Unfollow” (dejar de seguir) a un determinado vendedor.                                   | Diana Isabel Ramírez García                        |
+| US0008        | Ordenamiento alfabético ascendente y descendente                                                                      | Miguel Ochoa Mejía                                 |
+| US0009        | Ordenamiento por fecha ascendente y descendente                                                                       | Sebastian Ospina García                            |
 
 ## Integrantes
 
@@ -32,3 +32,4 @@ Para hacer pruebas se recomienda usar Postman. Todos los endpoints y casos de pr
 - Jhon Edison García García
 - Jorge Rodrigo Marcos Martínez
 - Miguel Ochoa Mejía
+- Sebastian Ospina García
