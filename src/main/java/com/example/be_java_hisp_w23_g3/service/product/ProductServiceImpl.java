@@ -32,49 +32,57 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public PostResponseDTO postProduct(PostRequestDTO postRequestDTO) {
-        // If user is not a seller, turn it into a seller
-        Seller seller = sellerRepository.read(postRequestDTO.getUserId())
-                .or(() -> userRepository.read(postRequestDTO.getUserId()).map(user -> {
-                    Seller newSeller = Seller.build(user);
-                    sellerRepository.create(newSeller);
-                    userRepository.delete(user.getId());
-                    return newSeller;
-                }))
-                .orElseThrow(() -> new NotFoundException("User with id " + postRequestDTO.getUserId() + " not found"));
+        Seller seller = getSeller(postRequestDTO.getUserId());
+        validateProduct(postRequestDTO.getProduct().getProductId());
 
-
-        // Check if product is already posted (id is unique)
-        Long productId = postRequestDTO.getProduct().getProductId();
-        boolean isProductAlreadyPosted = productRepository.findAll().stream()
-            .anyMatch(post -> post.getProduct().getId().equals(productId));
-
-        if (isProductAlreadyPosted) {
-            throw new AlreadyExistsException(
-                "Product with id " + productId + " already posted"
-            );
-        }
-
-        Long id = productRepository.getNextId();
-        Post post = PostMapper.toPost(postRequestDTO, seller, id);
-
-        // Save product to repository and add it to seller's posts
-        productRepository.create(post);
-        seller.getPosts().put(id, post);
-
+        Post post = createPost(postRequestDTO, seller);
         return PostMapper.toPostResponseDTO(post);
     }
 
     @Override
     public FollowedPostsListDTO followedPostsList(Long userId, String order) {
-        User user = userRepository.read(userId)
-                .or(() -> sellerRepository.read(userId))
-                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
-
+        User user = getUser(userId);
         List<Long> followedSellersIds = user.getFollowing().stream().map(Seller::getId).toList();
-
-        List<Post> allFollowedByUser = productRepository.readBatchBySellerIds(followedSellersIds).stream()
-                .filter(post -> !post.getDate().isBefore(LocalDate.now().minusWeeks(2))).toList();
+        List<Post> allFollowedByUser = getFollowedPosts(followedSellersIds);
 
         return PostMapper.mapToFollowedPostsListDTO(allFollowedByUser, userId, order);
+    }
+
+    private Seller getSeller(Long userId) {
+        return sellerRepository.read(userId)
+                .or(() -> userRepository.read(userId).map(this::convertUserToSeller))
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
+    }
+
+    private Seller convertUserToSeller(User user) {
+        Seller newSeller = Seller.build(user);
+        sellerRepository.create(newSeller);
+        userRepository.delete(user.getId());
+        return newSeller;
+    }
+
+    private void validateProduct(Long productId) {
+        if (productRepository.findAll().stream().anyMatch(post -> post.getProduct().getId().equals(productId))) {
+            throw new AlreadyExistsException("Product with id " + productId + " already posted");
+        }
+    }
+
+    private Post createPost(PostRequestDTO postRequestDTO, Seller seller) {
+        Long id = productRepository.getNextId();
+        Post post = PostMapper.toPost(postRequestDTO, seller, id);
+        productRepository.create(post);
+        seller.getPosts().put(id, post);
+        return post;
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.read(userId)
+                .or(() -> sellerRepository.read(userId))
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
+    }
+
+    private List<Post> getFollowedPosts(List<Long> followedSellersIds) {
+        return productRepository.readBatchBySellerIds(followedSellersIds).stream()
+                .filter(post -> !post.getDate().isBefore(LocalDate.now().minusWeeks(2))).toList();
     }
 }

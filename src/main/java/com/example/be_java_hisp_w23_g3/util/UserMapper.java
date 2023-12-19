@@ -5,9 +5,6 @@ import com.example.be_java_hisp_w23_g3.entity.Seller;
 import com.example.be_java_hisp_w23_g3.entity.User;
 
 import java.util.Comparator;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public class UserMapper {
 
     private static final String ORDER_NAME_ASC = "NAME_ASC";

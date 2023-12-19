@@ -12,57 +12,51 @@ import com.example.be_java_hisp_w23_g3.exception.ValidationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PostMapper {
 
     private static final String ORDER_DATE_ASC = "DATE_ASC";
     private static final String ORDER_DATE_DESC = "DATE_DESC";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public static PostResponseDTO toPostResponseDTO(Post post){
-        ProductDTO productDTO = ProductMapper.toProductDTO(post.getProduct());
-
         return new PostResponseDTO(
-            post.getSeller().getId(),
-            post.getId(),
-            post.getDate(),
-            productDTO,
-            post.getCategory(),
-            post.getPrice()
+                post.getSeller().getId(),
+                post.getId(),
+                post.getDate(),
+                ProductMapper.toProductDTO(post.getProduct()),
+                post.getCategory(),
+                post.getPrice()
         );
     }
 
     public static Post toPost(PostRequestDTO postRequestDTO, Seller seller, Long id){
-        Product product = ProductMapper.toProduct(postRequestDTO.getProduct());
-
-        // Parse string of dd-MM-yyyy to LocalDate
-        ArgumentValidator.validateRequired(postRequestDTO.getDate(), "Date is required");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate date = LocalDate.parse(postRequestDTO.getDate(), formatter);
-
         return Post.build(
-            id,
-            seller,
-            product,
-            date,
-            postRequestDTO.getCategory(),
-            postRequestDTO.getPrice()
+                id,
+                seller,
+                ProductMapper.toProduct(postRequestDTO.getProduct()),
+                LocalDate.parse(postRequestDTO.getDate(), formatter),
+                postRequestDTO.getCategory(),
+                postRequestDTO.getPrice()
         );
     }
 
     public static FollowedPostsListDTO mapToFollowedPostsListDTO(List<Post> posts, Long userId, String order) {
-        if(ORDER_DATE_ASC.equalsIgnoreCase(order))
-            return new FollowedPostsListDTO(userId, posts.stream()
-                    .sorted((p1, p2) -> p1.getDate().compareTo(p2.getDate()))
-                    .map(PostMapper::toPostResponseDTO).toList());
-
-        if(ORDER_DATE_DESC.equalsIgnoreCase(order))
-            return new FollowedPostsListDTO(userId, posts.stream()
-                    .sorted((p1, p2) -> p2.getDate().compareTo(p1.getDate()))
-                    .map(PostMapper::toPostResponseDTO).toList());
-
+        Comparator<Post> comparator;
+        if (ORDER_DATE_DESC.equalsIgnoreCase(order)) {
+            comparator = Comparator.comparing(Post::getDate).reversed();
+        } else if (ORDER_DATE_ASC.equalsIgnoreCase(order)) {
+            comparator = Comparator.comparing(Post::getDate);
+        } else {
+            comparator = Comparator.comparing(Post::getDate);
+        }
         return new FollowedPostsListDTO(userId, posts.stream()
-                .map(PostMapper::toPostResponseDTO).toList());
+                .sorted(comparator)
+                .map(PostMapper::toPostResponseDTO)
+                .collect(Collectors.toList()));
     }
 
 }
