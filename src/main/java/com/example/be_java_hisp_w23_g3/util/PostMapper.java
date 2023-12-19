@@ -2,6 +2,7 @@ package com.example.be_java_hisp_w23_g3.util;
 
 import com.example.be_java_hisp_w23_g3.dto.ProductDTO;
 import com.example.be_java_hisp_w23_g3.dto.request.PostRequestDTO;
+import com.example.be_java_hisp_w23_g3.dto.response.FollowedPostsListDTO;
 import com.example.be_java_hisp_w23_g3.dto.response.PostResponseDTO;
 import com.example.be_java_hisp_w23_g3.entity.Post;
 import com.example.be_java_hisp_w23_g3.entity.Product;
@@ -11,6 +12,7 @@ import com.example.be_java_hisp_w23_g3.exception.ValidationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class PostMapper {
 
@@ -43,6 +45,10 @@ public class PostMapper {
             postRequestDTO.getCategory(),
             postRequestDTO.getPrice()
         );
+    }
+
+    public static FollowedPostsListDTO mapToFollowedPostsListDTO(List<Post> posts, Long userId) {
+        return new FollowedPostsListDTO(userId, posts.stream().map(PostMapper::toPostResponseDTO).toList());
     }
 
 }
