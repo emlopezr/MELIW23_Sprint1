@@ -29,9 +29,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public FollowersCountDTO getFollowersCount(Long userId) {
-        Seller seller = sellerRepository.findSellerById(userId);
-        if (seller == null)
-            throw new NotFoundException("Seller with id " + userId + " not found");
+        Seller seller = sellerRepository.findSellerByIdOptional(userId)
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
         return DTOMapper.mapToFollowersCountDTO(seller);
     }
 
