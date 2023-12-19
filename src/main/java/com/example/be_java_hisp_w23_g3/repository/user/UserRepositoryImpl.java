@@ -16,21 +16,24 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findUserById(Long userId) {
-        return users.stream()
-            .filter(user -> user.getId().equals(userId))
-            .findFirst()
-            .orElse(null);
-    }
-
-    @Override
-    public Optional<User> findUserByIdOptional(Long userId) {
+    public Optional<User> read(Long userId) {
         return users.stream().filter(user -> user.getId().equals(userId)).findFirst();
     }
 
     @Override
-    public boolean deleteUserById(Long userId) {
-        return users.removeIf(user -> user.getId().equals(userId));
+    public User create(User entity) {
+        users.add(entity);
+        return entity;
+    }
+
+    @Override
+    public void update(User entity) {
+
+    }
+
+    @Override
+    public void delete(Long userId) {
+        users.removeIf(user -> user.getId().equals(userId));
     }
 
     @Override

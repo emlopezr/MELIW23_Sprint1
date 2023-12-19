@@ -26,14 +26,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public FollowersCountDTO getFollowersCount(Long userId) {
-        Seller seller = sellerRepository.findSellerByIdOptional(userId)
+        Seller seller = sellerRepository.read(userId)
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
         return DTOMapper.mapToFollowersCountDTO(seller);
     }
 
     @Override
     public FollowersListDTO getFollowersList(Long userId, String order) {
-        Seller seller = sellerRepository.findSellerByIdOptional(userId)
+        Seller seller = sellerRepository.read(userId)
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
 
         return UserMapper.mapToFollowersListDTO(seller, order);
@@ -41,8 +41,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public FollowedListDTO getFollowedSellersList(Long userID, String order) {
-        User user = userRepository.findUserByIdOptional(userID)
-                .or(() -> sellerRepository.findSellerByIdOptional(userID))
+        User user = userRepository.read(userID)
+                .or(() -> sellerRepository.read(userID))
                 .orElseThrow(() -> new NotFoundException("User with id " + userID + " not found"));
 
         return UserMapper.mapToFollowedListDTO(user, order);
@@ -53,10 +53,10 @@ public class UserServiceImpl implements UserService {
             throw new FollowingMyselfException("You can't follow yourself");
         }
 
-        Seller sellerToFollow = sellerRepository.findSellerByIdOptional(userIdToFollow)
+        Seller sellerToFollow = sellerRepository.read(userIdToFollow)
                 .orElseThrow(() -> new NotFoundException("Seller with id " + userIdToFollow + " not found"));
-        User user = userRepository.findUserByIdOptional(userId)
-                .or(() -> sellerRepository.findSellerByIdOptional(userId))
+        User user = userRepository.read(userId)
+                .or(() -> sellerRepository.read(userId))
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
 
         if(user.getFollowing().contains(sellerToFollow)){
@@ -71,8 +71,8 @@ public class UserServiceImpl implements UserService {
             throw new UnFollowingMyselfException("You can't unfollow yourself");
         }
 
-        User user = userRepository.findUserByIdOptional(userId)
-                .or(() -> sellerRepository.findSellerByIdOptional(userId))
+        User user = userRepository.read(userId)
+                .or(() -> sellerRepository.read(userId))
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
 
         Seller sellerToUnfollow = userRepository.findSellerInFollowings(user,userIdToUnfollow)
