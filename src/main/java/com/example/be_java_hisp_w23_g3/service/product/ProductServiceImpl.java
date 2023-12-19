@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public FollowedPostsListDTO followedPostsList(Long userId) {
+    public FollowedPostsListDTO followedPostsList(Long userId, String order) {
         User user = userRepository.findUserByIdOptional(userId)
                 .or(() -> sellerRepository.findSellerByIdOptional(userId))
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
@@ -81,6 +81,6 @@ public class ProductServiceImpl implements ProductService{
         List<Post> allFollowedByUser = productRepository.readBatchBySellerIds(followedSellersIds).stream()
                 .filter(post -> !post.getDate().isBefore(LocalDate.now().minusWeeks(2))).toList();
 
-        return PostMapper.mapToFollowedPostsListDTO(allFollowedByUser, userId);
+        return PostMapper.mapToFollowedPostsListDTO(allFollowedByUser, userId, order);
     }
 }

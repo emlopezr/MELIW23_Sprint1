@@ -31,7 +31,8 @@ public class ProductController {
     }
 
     @GetMapping("/followed/{userId}/list")
-    public ResponseEntity<?> followedPostsList(@PathVariable Long userId) {
-        return ResponseEntity.ok().body(productService.followedPostsList(userId));
+    public ResponseEntity<?> followedPostsList(@PathVariable Long userId,
+                                               @RequestParam(required = false) String order) {
+        return ResponseEntity.ok().body(productService.followedPostsList(userId, order));
     }
 }
