@@ -20,12 +20,13 @@ public class Product {
     }
 
     public static Product build(Long id, String name, String type, String brand, String color, String notes) {
-        ArgumentValidator.validateRequired(id, "Id is required");
-        ArgumentValidator.validateRequired(name, "Name is required");
-        ArgumentValidator.validateRequired(type, "Type is required");
-        ArgumentValidator.validateRequired(brand, "Brand is required");
-        ArgumentValidator.validateRequired(color, "Color is required");
-        ArgumentValidator.validateRequired(notes, "Notes is required");
+        ArgumentValidator.validateRequired(id, "Product Id is required");
+        ArgumentValidator.validatePositive(id, "Product id is required");
+        ArgumentValidator.validateRequired(name, "Product name is required");
+        ArgumentValidator.validateRequired(type, "Product type is required");
+        ArgumentValidator.validateRequired(brand, "Product brand is required");
+        ArgumentValidator.validateRequired(color, "Product color is required");
+        ArgumentValidator.validateRequired(notes, "Product notes are required");
         return new Product(id, name, type, brand, color, notes);
     }
 

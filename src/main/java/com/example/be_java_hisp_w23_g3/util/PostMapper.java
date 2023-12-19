@@ -6,6 +6,7 @@ import com.example.be_java_hisp_w23_g3.dto.response.PostResponseDTO;
 import com.example.be_java_hisp_w23_g3.entity.Post;
 import com.example.be_java_hisp_w23_g3.entity.Product;
 import com.example.be_java_hisp_w23_g3.entity.Seller;
+import com.example.be_java_hisp_w23_g3.exception.ValidationException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ public class PostMapper {
         Product product = ProductMapper.toProduct(postRequestDTO.getProduct());
 
         // Parse string of dd-MM-yyyy to LocalDate
+        ArgumentValidator.validateRequired(postRequestDTO.getDate(), "Date is required");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate date = LocalDate.parse(postRequestDTO.getDate(), formatter);
 
